@@ -1,9 +1,9 @@
 public class Room {
 
-    protected int roomNumber;
-    protected double pricePerNight;
-    protected boolean isAvailable;
-    protected String roomType;
+    private int roomNumber;
+    private double pricePerNight;
+    private boolean isAvailable;
+    private String roomType;
 
     public Room(int roomNumber, double pricePerNight, String roomType) {
         this.roomNumber = roomNumber;

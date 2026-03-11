@@ -28,7 +28,7 @@ public class DeluxeRoom extends StandardRoom {
     }
 
     public double getEffectivePrice() {
-        return pricePerNight + luxurySurcharge;
+        return getPricePerNight() + luxurySurcharge;
     }
 
     public String toString() {
