@@ -4,7 +4,7 @@ public class Customer extends Person implements Payable
     private int numReservations;
     private static final int MAX = 10;
 
-    Customer(String name , String id , String phone)
+    public Customer(String name , String id , String phone)
     {
         super(name,id,phone);
         reservations = new Reservation[MAX];
@@ -30,10 +30,10 @@ public class Customer extends Person implements Payable
                 for(int j = i; j < numReservations -1 ; j++)
                 {
                     reservations[j] = reservations[j+1];
+                }
                  reservations[numReservations-1] = null;
                  numReservations--;
                  return true;
-                }
             }
         }
         return false;
@@ -88,7 +88,7 @@ public class Customer extends Person implements Payable
 
     public String toString()
     {
-        return "\nName: "+getName()+"\nID: "+getId()+"\nPhone: "+getPhone()+"\nRole: "+getRole()+"\nReservations"+numReservations;
+        return "\nName: "+getName()+"\nID: "+getId()+"\nPhone: "+getPhone()+"\nRole: "+getRole()+"\nReservations: "+numReservations;
  
     }
 
