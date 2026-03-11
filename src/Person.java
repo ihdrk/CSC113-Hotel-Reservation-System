@@ -1,8 +1,8 @@
 abstract class Person 
 {
-    protected String name;
-    protected String id;
-    protected String phone;
+    private  String name;
+    private String id;
+    private String phone;
 
     public Person(String name , String id , String phone)
     {

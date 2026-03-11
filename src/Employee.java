@@ -31,8 +31,7 @@ public class Employee extends Person
     }
 
     public String toString()
-    {return "\nName: "+name+"\nID: "+id+"\nPhone: "+phone+"\nRole: "+getRole()+"\nSalary: "+ salary;
-}
+    {return "\nName: "+getName()+"\nID: "+getId()+"\nPhone: "+getPhone()+"\nRole: "+getRole()+"\nSalary: "+ salary;}
 
     
 }

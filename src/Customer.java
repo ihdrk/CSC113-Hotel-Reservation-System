@@ -2,17 +2,19 @@ public class Customer extends Person implements Payable
 {
     private Reservation[] reservations;
     private int numReservations;
-    private Static final int MAX = 10;
+    private static final int MAX = 10;
 
     Customer(String name , String id , String phone)
     {
         super(name,id,phone);
+        reservations = new Reservation[MAX];
+        numReservations = 0;
 
     }
 
     public boolean addReservation(Reservation r)
     {
-        if(numReservations >  MAX)
+        if(numReservations >=  MAX)
         {return false;}
         
         reservations[numReservations++] = r;
@@ -21,23 +23,30 @@ public class Customer extends Person implements Payable
 
     public boolean removeReservation(String reservationId)
     {
-        for(int i = 0 ; reservations[i].getReservationId.equals(reservationId); ++i)
+        for(int i = 0 ; i < numReservations; ++i)
         {
-            for(int j = i; j < numReservations -1 ; j++)
+            if(reservations[i].getReservationId().equals(reservationId))
             {
-                reservations[j] = reservations[j+1];
-                reservations[numReservations-1] = null;
-                numReservations--;
-                return true;
+                for(int j = i; j < numReservations -1 ; j++)
+                {
+                    reservations[j] = reservations[j+1];
+                 reservations[numReservations-1] = null;
+                 numReservations--;
+                 return true;
+                }
             }
         }
         return false;
     }
 
-    public Reservations searchReservation(String reservationId)
+    public Reservation searchReservation(String reservationId)
     {
-        for(int i = 0 ; reservations[i].getReservationId.equals(reservationId); ++i)
-        {return reservations[i];}
+        for(int i = 0 ; i < numReservations ; ++i)
+        {if(reservations[i].getReservationId().equals(reservationId))
+        {
+            return reservations[i];
+        }
+         }
         return null;
     }
 
@@ -56,7 +65,7 @@ public class Customer extends Person implements Payable
         if(index == numReservations)
             return 0.0;
         
-        return reservations[index].calculateBill + totalSpentRecursive(index+1);
+        return reservations[index].calculateBill() + totalSpentRecursive(index+1);
     }
 
     public String getRole()
@@ -68,18 +77,18 @@ public class Customer extends Person implements Payable
     {
         if(numReservations != 0)
         {
-            for(int i = 0 ; i< numReservations : ++i)
+            for(int i = 0 ; i< numReservations ; i++)
             {
-                reservations[i].toString();
+                System.out.println(reservations[i]);
             }
         }
         else
             System.out.println("No reservations Found");
     }
 
-    public String ToString()
+    public String toString()
     {
-        return "\nName: "+name+"\nID: "+id+"\nPhone: "+phone+"\nRole: "+getRole()+"\nReservations"+numReservations;
+        return "\nName: "+getName()+"\nID: "+getId()+"\nPhone: "+getPhone()+"\nRole: "+getRole()+"\nReservations"+numReservations;
  
     }
 
