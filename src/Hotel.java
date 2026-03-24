@@ -5,21 +5,21 @@ public class Hotel {
     private Customer[] customers;
     private int numRooms;
     private int numCustomers;
-    private static final int Max_Rooms = 50;
-    private static final int Max_Customers = 100;
+    private static final int MAX_ROOMS = 50;
+    private static final int MAX_CUSTOMERS = 100;
     private int nextReservationNumber;
 
     public Hotel(String hotelName) {
         this.hotelName = hotelName;
-        rooms = new Room[Max_Rooms];
-        customers = new Customer[Max_Customers];
+        rooms = new Room[MAX_ROOMS];
+        customers = new Customer[MAX_CUSTOMERS];
         numRooms = 0;
         numCustomers = 0;
         nextReservationNumber = 1;
     }
 
     public boolean addRoom(Room r) {
-        if (numRooms >= Max_Rooms) {
+        if (numRooms >= MAX_ROOMS) {
             return false;
         }
         rooms[numRooms] = r;
@@ -69,7 +69,7 @@ public class Hotel {
             return false;
         }
 
-        if (numCustomers >= Max_Customers) {
+        if (numCustomers >= MAX_CUSTOMERS) {
             return false;
         }
 
