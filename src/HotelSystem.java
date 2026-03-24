@@ -5,6 +5,9 @@ public class HotelSystem {
         Scanner sc = new Scanner(System.in);
         Hotel hotel = new Hotel("Grand Palace Hotel");
 
+        Employee emp1 = new Employee("Ahmed Al-Rashid", "E1", "0512345678", "Receptionist", 5000);
+        Employee emp2 = new Employee("Majed Al-Qahtani", "E2", "0587654321", "Manager", 9000);
+
         hotel.addRoom(new StandardRoom(101, 150, 2, true));
         hotel.addRoom(new StandardRoom(102, 120, 1, false));
         hotel.addRoom(new DeluxeRoom(201, 300, 2, true, true,true, 75.0));
@@ -40,6 +43,9 @@ public class HotelSystem {
                     System.out.println("Total hotel revenue: $" + hotel.totalRevenueRecursive(0));
                     break;
                 case 8:
+                    System.out.println(emp1 +"\n"+ emp2);
+                    break;
+                case 9:
                     running = false;
                     break;
                 default:
@@ -52,7 +58,7 @@ public class HotelSystem {
     }
 
     public static void printMenu() {
-        System.err.println("");
+        System.out.println(" ");
         System.out.println("===== Grand Palace Hotel =====");
         System.out.println("1. Register as customer");
         System.out.println("2. View available rooms");
@@ -61,7 +67,8 @@ public class HotelSystem {
         System.out.println("5. View my reservations");
         System.out.println("6. View my bill");
         System.out.println("7. View total hotel revenue");
-        System.out.println("8. Exit");
+        System.out.println("8. View hotel staff");
+        System.out.println("9. Exit");
         System.out.print("Enter choice: ");
     }
 
