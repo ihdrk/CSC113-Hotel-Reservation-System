@@ -59,7 +59,7 @@ public class HotelSystem {
 
     public static void printMenu() {
         System.out.println(" ");
-        System.out.println("===== Grand Palace Hotel =====");
+        System.out.println("===== KSU Hotel =====");
         System.out.println("1. Register as customer");
         System.out.println("2. View available rooms");
         System.out.println("3. Make a reservation");
