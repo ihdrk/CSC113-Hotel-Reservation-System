@@ -31,6 +31,11 @@ public class DeluxeRoom extends StandardRoom {
         return getPricePerNight() + luxurySurcharge;
     }
 
+    public String getRoomType() 
+    {
+    return "Deluxe";
+    }
+
     public String toString() {
 
         return super.toString()
