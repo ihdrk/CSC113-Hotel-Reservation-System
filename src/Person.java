@@ -31,7 +31,7 @@ public abstract class Person
         this.phone = phone;
     }
 
-    public abstract String getRole(); // abstract method later used in Customer class
+    public abstract String getRole(); // abstract method later used in Class Customer and Employee
 
     public String toString() // returns info in string format (no parameters)
     {
