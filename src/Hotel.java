@@ -22,6 +22,9 @@ public class Hotel {
         if (numRooms >= MAX_ROOMS) {
             return false;
         }
+        if (searchRoom(r.getRoomNumber()) != null) {
+        return false;
+        }
         rooms[numRooms] = r;
         numRooms++;
         return true;
