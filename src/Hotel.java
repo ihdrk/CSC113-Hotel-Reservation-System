@@ -20,20 +20,20 @@ public class Hotel {
 
     public boolean addRoom(Room r)
     {
-        if (numRooms >= MAX_ROOMS) 
+        if (numRooms >= MAX_ROOMS) // making sure there is space for room in array
         {
         return false;
         }
-        if(searchRoom(r.getRoomNumber()) != null)
+        if(searchRoom(r.getRoomNumber()) != null) // making sure  a room with the same number doesnt already exist
         {
             return false;
         }
-        if(r instanceof DeluxeRoom)
-        {rooms[numRooms++] = new DeluxeRoom((DeluxeRoom) r); return true;}
-        else if(r instanceof StandardRoom)
-        { rooms[numRooms++] = new StandardRoom((StandardRoom) r); return true;}
+        if(r instanceof DeluxeRoom) // checking if room is of type DeluxeRoom
+        {rooms[numRooms++] = new DeluxeRoom((DeluxeRoom) r); return true;}// calling copy copy constructor of DeluxeeRoom and adding the copy to rooms array
+        else if(r instanceof StandardRoom)// checking if room is of type StandardRoom
+        { rooms[numRooms++] = new StandardRoom((StandardRoom) r); return true;}// calling copy copy constructor of StandardRoom and adding the copy to rooms array
         else
-        {rooms[numRooms++] = new Room(r); return true;}
+        {rooms[numRooms++] = new Room(r); return true;}// calling copy copy constructor of Room and adding the copy to rooms array
     }
 
     public boolean removeRoom(int roomNumber) {

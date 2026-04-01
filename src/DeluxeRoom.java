@@ -15,7 +15,7 @@ public class DeluxeRoom extends StandardRoom {
         this.luxurySurcharge = surcharge;
     }
 
-    public DeluxeRoom(DeluxeRoom other) 
+    public DeluxeRoom(DeluxeRoom other) // copy constructor used in Hotel
     {
         super(other);
         this.hasJacuzzi = other.hasJacuzzi;

@@ -12,7 +12,7 @@ public class Room {
         this.isAvailable = true;
     }
 
-    public Room(Room other) 
+    public Room(Room other) // copy constructor used in Hotel
     {
         this.roomNumber = other.roomNumber;
         this.pricePerNight = other.pricePerNight;

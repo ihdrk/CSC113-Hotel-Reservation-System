@@ -11,7 +11,7 @@ public class StandardRoom extends Room {
         this.hasTV = hasTV;
     }
 
-    public StandardRoom(StandardRoom other) 
+    public StandardRoom(StandardRoom other) // copy constructor used in Hotel
     {
         super(other);
         this.numBeds = other.numBeds;
