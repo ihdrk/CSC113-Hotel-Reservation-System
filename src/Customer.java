@@ -1,8 +1,13 @@
-public class Customer extends Person implements Payable
+public class Customer extends Person
 {   // private attributes only accessed directly inside class
     private Reservation[] reservations; // array of objects type Reservations
     private int numReservations;
     private static final int MAX = 10; //constant representing max number of reservations allowed
+
+    // new array of objects to store extra hotel services added for customer
+    private Service[] services;
+    private int numServices;
+    private static final int MAX_SERVICES = 10; // maximum number of services allowed
 
     //constructor with parameters initializing attributes ,uses constructor of parent class (Person) with super method
     public Customer(String name , String id , String phone)
@@ -11,6 +16,9 @@ public class Customer extends Person implements Payable
         reservations = new Reservation[MAX]; // assigning size MAX to array of object
         numReservations = 0;
 
+        // initialize service array and start number of services at 0
+        services = new Service[MAX_SERVICES];
+        numServices = 0;
     }
 
     public boolean addReservation(Reservation r)
@@ -26,7 +34,7 @@ public class Customer extends Person implements Payable
     {
         for(int i = 0 ; i < numReservations; ++i) // for loop used to traverse through array of objects
         {
-            if(reservations[i].getReservationId().equals(reservationId)) // if statment used to compare Id of all reservations with Id of reservation we want to remove (from parameter)
+            if(reservations[i].getReservationId().equals(reservationId)) // if statement used to compare Id of all reservations with Id of reservation we want to remove (from parameter)
             {
                 for(int j = i; j < numReservations -1 ; j++)// for loop used to traverse through array of objects starting from index of reservation we want to remove
                 {
@@ -51,22 +59,101 @@ public class Customer extends Person implements Payable
         return null; // returns null if reservationid is not found
     }
 
-    public double calculateBill()// calculates bill method from Interface Payable
+    // adds a service object to the customer service array
+    public boolean addService(Service s)
+    {
+        if(numServices >= MAX_SERVICES) // checks if there is space for new service
+        {
+            return false;
+        }
+
+        services[numServices++] = s; // adds service to array then increments number of services
+        return true;
+    }
+
+    // removes a service by its name from the services array
+    public boolean removeService(String serviceName)
+    {
+        for(int i = 0; i < numServices; i++)
+        {
+            if(services[i].getServiceName().equalsIgnoreCase(serviceName)) // compares entered service name with each stored service name
+            {
+                for(int j = i; j < numServices - 1; j++)
+                {
+                    services[j] = services[j + 1]; // shift all elements left after removing service
+                }
+
+                services[numServices - 1] = null; // make last element null after shifting
+                numServices--;
+                return true;
+            }
+        }
+        return false; // returns false if service was not found
+    }
+
+    // displays all added services for the customer
+    public void displayServices()
+    {
+        if(numServices == 0)
+        {
+            System.out.println("No services found");
+            return;
+        }
+
+        for(int i = 0; i < numServices; i++)
+        {
+            System.out.println(services[i]); // prints each service using toString method
+        }
+    }
+
+    public double calculateBill()// calculates total bill for customer reservations and services
     {
         double total = 0;
         for(int i = 0 ; i < numReservations; ++ i) // for loop traverses through array of object 
         {
             total += reservations[i].calculateBill(); // adding bill of each reservation to total (calculateBill method from Reservation class)
         }
+
+        // adds bill of each service to total
+        for(int i = 0; i < numServices; ++i)
+        {
+            total += services[i].calculateBill();
+        }
+
         return total;
+    }
+
+    // recursive method that calculates total bill for all services
+    public double totalServicesRecursive(int index)
+    {
+        if(index == numServices) // base case: index reaches number of services, returns 0
+            return 0.0;
+
+        return services[index].calculateBill() + totalServicesRecursive(index + 1); // recursive case
     }
 
     public double totalSpentRecursive(int index)// Recursive method that calculates total bill for all reservations
     {
-        if(index == numReservations)// Base case: index reaches numReservations, returns 0
-            return 0.0;
+        if(index == numReservations)// Base case: if all reservations processed, continue with services recursively
+            return totalServicesRecursive(0);
         
         return reservations[index].calculateBill() + totalSpentRecursive(index+1);// Recursive case: adds current reservation bill to result of next call
+    }
+
+    // checks if customer currently has at least one reservation
+    public boolean hasReservations()
+    {
+        return numReservations > 0;
+    }
+
+    // removes all services when customer no longer has any reservation
+    public void clearServices()
+    {
+        for(int i = 0; i < numServices; i++)
+        {
+            services[i] = null;
+        }
+        numServices = 0;
     }
 
     public String getRole() // returns role (no parameter) from abstract class Person
@@ -76,7 +163,7 @@ public class Customer extends Person implements Payable
 
     public void  displayReservations()
     {
-        if(numReservations != 0) // makes sure atleast 1 reservation exists
+        if(numReservations != 0) // makes sure at least 1 reservation exists
         {
             for(int i = 0 ; i< numReservations ; i++) // traverses through array of object printing each one (toString is used)
             {
@@ -93,9 +180,14 @@ public class Customer extends Person implements Payable
         "\nID: "+getId()+
         "\nPhone: "+getPhone()+
         "\nRole: "+getRole()+
-        "\nReservations: "+numReservations;
+        "\nReservations: "+numReservations+
+        "\nServices: "+numServices;
  
     }
-
-
+ // checks if customer currently has at least one service
+    public boolean hasServices()
+    {
+        return numServices > 0;
+    }
 }
+
