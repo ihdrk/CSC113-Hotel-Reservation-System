@@ -12,6 +12,14 @@ public class Room {
         this.isAvailable = true;
     }
 
+    public Room(Room other) 
+    {
+        this.roomNumber = other.roomNumber;
+        this.pricePerNight = other.pricePerNight;
+        this.roomType = other.roomType;
+        this.isAvailable = other.isAvailable;
+    }
+
     public int getRoomNumber() {
         return roomNumber;
     }

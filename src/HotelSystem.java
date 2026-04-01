@@ -8,10 +8,15 @@ public class HotelSystem {
         Employee emp1 = new Employee("Ahmed Al-Rashid", "E1", "0512345678", "Receptionist", 5000);
         Employee emp2 = new Employee("Majed Al-Qahtani", "E2", "0587654321", "Manager", 9000);
 
-        hotel.addRoom(new StandardRoom(101, 150, 2, true));
-        hotel.addRoom(new StandardRoom(102, 120, 1, false));
-        hotel.addRoom(new DeluxeRoom(201, 300, 2, true, true,true, 75.0));
-        hotel.addRoom(new DeluxeRoom(202, 280, 2, true, false,true, 50.0));
+        StandardRoom s1 = new StandardRoom(101, 150, 2, true);
+        StandardRoom s2 = new StandardRoom(102, 120, 1, false);
+        DeluxeRoom d1 = new DeluxeRoom(201, 300, 2, true, true,true, 75.0);
+        DeluxeRoom d2 = new DeluxeRoom(202, 280, 2, true, false,true, 50.0);
+
+        hotel.addRoom(s1);
+        hotel.addRoom(s2);
+        hotel.addRoom(d1);
+        hotel.addRoom(d2);
 
         boolean running = true;
 

@@ -11,6 +11,13 @@ public class StandardRoom extends Room {
         this.hasTV = hasTV;
     }
 
+    public StandardRoom(StandardRoom other) 
+    {
+        super(other);
+        this.numBeds = other.numBeds;
+        this.hasTV = other.hasTV;
+    }
+
     public int getNumBeds() {
         return numBeds;
     }

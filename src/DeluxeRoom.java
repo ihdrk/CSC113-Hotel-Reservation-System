@@ -15,6 +15,14 @@ public class DeluxeRoom extends StandardRoom {
         this.luxurySurcharge = surcharge;
     }
 
+    public DeluxeRoom(DeluxeRoom other) 
+    {
+        super(other);
+        this.hasJacuzzi = other.hasJacuzzi;
+        this.hasOceanView = other.hasOceanView;
+        this.luxurySurcharge = other.luxurySurcharge;
+    }
+
     public boolean hasJacuzzi() {
         return hasJacuzzi;
     }
@@ -35,7 +43,7 @@ public class DeluxeRoom extends StandardRoom {
     {
     return "Deluxe";
     }
-
+     
     public String toString() {
 
         return super.toString()

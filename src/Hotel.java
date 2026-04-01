@@ -18,16 +18,22 @@ public class Hotel {
         nextReservationNumber = 1;
     }
 
-    public boolean addRoom(Room r) {
-        if (numRooms >= MAX_ROOMS) {
-            return false;
-        }
-        if (searchRoom(r.getRoomNumber()) != null) {
+    public boolean addRoom(Room r)
+    {
+        if (numRooms >= MAX_ROOMS) 
+        {
         return false;
         }
-        rooms[numRooms] = r;
-        numRooms++;
-        return true;
+        if(searchRoom(r.getRoomNumber()) != null)
+        {
+            return false;
+        }
+        if(r instanceof DeluxeRoom)
+        {rooms[numRooms++] = new DeluxeRoom((DeluxeRoom) r); return true;}
+        else if(r instanceof StandardRoom)
+        { rooms[numRooms++] = new StandardRoom((StandardRoom) r); return true;}
+        else
+        {rooms[numRooms++] = new Room(r); return true;}
     }
 
     public boolean removeRoom(int roomNumber) {
