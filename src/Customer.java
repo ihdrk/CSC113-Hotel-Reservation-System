@@ -34,7 +34,7 @@ public class Customer extends Person
     {
         for(int i = 0 ; i < numReservations; ++i) // for loop used to traverse through array of objects
         {
-            if(reservations[i].getReservationId().equals(reservationId)) // if statement used to compare Id of all reservations with Id of reservation we want to remove (from parameter)
+            if(reservations[i].getReservationId().equalsIgnoreCase(reservationId)) // if statement used to compare Id of all reservations with Id of reservation we want to remove (from parameter)
             {
                 for(int j = i; j < numReservations -1 ; j++)// for loop used to traverse through array of objects starting from index of reservation we want to remove
                 {
@@ -132,7 +132,7 @@ public class Customer extends Person
         return services[index].calculateBill() + totalServicesRecursive(index + 1); // recursive case
     }
 
-    public double totalSpentRecursive(int index)// Recursive method that calculates total bill for all reservations
+    public double totalSpentRecursive(int index)// Recursive method that calculates total bill for all reservations and services
     {
         if(index == numReservations)// Base case: if all reservations processed, continue with services recursively
             return totalServicesRecursive(0);
