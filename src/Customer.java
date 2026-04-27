@@ -1,90 +1,64 @@
-public class Customer extends Person
-{   // private attributes only accessed directly inside class
-    private Reservation[] reservations; // array of objects type Reservations
-    private int numReservations;
-    private static final int MAX = 10; //constant representing max number of reservations allowed
+import java.io.Serializable;
+public class Customer extends Person implements Serializable
+{   
+   // LinkedList to store reservations and services instead of arrays
+    private LinkedList reservations;
+    private LinkedList services;
 
-    // new array of objects to store extra hotel services added for customer
-    private Service[] services;
-    private int numServices;
-    private static final int MAX_SERVICES = 10; // maximum number of services allowed
-
-    //constructor with parameters initializing attributes ,uses constructor of parent class (Person) with super method
+    //constructor initializes the linked list ,uses constructor of parent class (Person) with super method
     public Customer(String name , String id , String phone)
     {
         super(name,id,phone);
-        reservations = new Reservation[MAX]; // assigning size MAX to array of object
-        numReservations = 0;
-
-        // initialize service array and start number of services at 0
-        services = new Service[MAX_SERVICES];
-        numServices = 0;
+        reservations = new LinkedList();
+        services = new LinkedList();
     }
 
     public boolean addReservation(Reservation r)
     {
-        if(numReservations >=  MAX) //checks if number of reservations is less than MAX
-        {return false;} // returns false if reservation is not added
-        
-        reservations[numReservations++] = r; // adds reservation to array of object
-        return true; // returns true if reservation added successfully
+        reservations.add(r); // Adds a reservation to the linked list
+        return true; //always returns true since linked list has no fixed size limit
     }
 
-    public boolean removeReservation(String reservationId) //parameter is the reservationId that we want to remove
+    public boolean removeReservation(String reservationId) // Removes a reservation by searching for its specific ID
     {
-        for(int i = 0 ; i < numReservations; ++i) // for loop used to traverse through array of objects
-        {
-            if(reservations[i].getReservationId().equalsIgnoreCase(reservationId)) // if statement used to compare Id of all reservations with Id of reservation we want to remove (from parameter)
+        for(int i = 0 ; i < reservations.getSize(); ++i) // for loop used to traverse list
+        {   Reservation r = (Reservation) reservations.get(i);
+            if(r.getReservationId().equalsIgnoreCase(reservationId)) // compares IDs 
             {
-                for(int j = i; j < numReservations -1 ; j++)// for loop used to traverse through array of objects starting from index of reservation we want to remove
-                {
-                    reservations[j] = reservations[j+1]; // moves all values 1 index to the left replacing the deleted reservation
-                }
-                 reservations[numReservations-1] = null; // making the last value null so we wouldn't have 2 reservations with the same id
-                 numReservations--;
+                reservations.removeAt(i);
                  return true; // returning true after successful removal
             }
         }
         return false; // returns false after failure to remove
     }
 
-    public Reservation searchReservation(String reservationId) // searches through array of object till reservation id in parameter is found
+    public Reservation searchReservation(String reservationId) // searches for a reservation by ID and returns the object
     {
-        for(int i = 0 ; i < numReservations ; ++i)// for loop used to traverse through array of objects
-        {if(reservations[i].getReservationId().equals(reservationId)) // if statment used to compare Id of all reservations with Id of reservation we want to find (from parameter)
+        for(int i = 0 ; i < reservations.getSize() ; ++i)// for loop used to traverse alist
+        { Reservation r = (Reservation) reservations.get(i);
+            if(r.getReservationId().equals(reservationId)) // checks if ID matches
         {
-            return reservations[i]; //returns the full Reservation object matching the given ID
+            return r; //returns the full Reservation object matching the given ID
         }
          }
         return null; // returns null if reservationid is not found
     }
 
-    // adds a service object to the customer service array
+    // adds a service object to the customer service list
     public boolean addService(Service s)
     {
-        if(numServices >= MAX_SERVICES) // checks if there is space for new service
-        {
-            return false;
-        }
-
-        services[numServices++] = s; // adds service to array then increments number of services
+        services.add(s);
         return true;
     }
 
-    // removes a service by its name from the services array
+    // removes a service by its name from the services list
     public boolean removeService(String serviceName)
     {
-        for(int i = 0; i < numServices; i++)
-        {
-            if(services[i].getServiceName().equalsIgnoreCase(serviceName)) // compares entered service name with each stored service name
+        for(int i = 0; i < services.getSize(); i++)
+        { Service s = (Service) services.get(i);
+            if(s.getServiceName().equalsIgnoreCase(serviceName)) // compares service names
             {
-                for(int j = i; j < numServices - 1; j++)
-                {
-                    services[j] = services[j + 1]; // shift all elements left after removing service
-                }
-
-                services[numServices - 1] = null; // make last element null after shifting
-                numServices--;
+                services.removeAt(i);
                 return true;
             }
         }
@@ -94,30 +68,30 @@ public class Customer extends Person
     // displays all added services for the customer
     public void displayServices()
     {
-        if(numServices == 0)
+        if(services.isEmpty())
         {
             System.out.println("No services found");
             return;
         }
 
-        for(int i = 0; i < numServices; i++)
+        for(int i = 0; i < services.getSize(); i++)
         {
-            System.out.println(services[i]); // prints each service using toString method
+            System.out.println(services.get(i)); // prints each service using toString method
         }
     }
 
     public double calculateBill()// calculates total bill for customer reservations and services
     {
         double total = 0;
-        for(int i = 0 ; i < numReservations; ++ i) // for loop traverses through array of object 
-        {
-            total += reservations[i].calculateBill(); // adding bill of each reservation to total (calculateBill method from Reservation class)
+        for(int i = 0 ; i < reservations.getSize(); ++ i) // loop through reservations 
+        { Reservation r = (Reservation) reservations.get(i);
+            total += r.calculateBill(); // add reservation cost to total
         }
 
         // adds bill of each service to total
-        for(int i = 0; i < numServices; ++i)
-        {
-            total += services[i].calculateBill();
+        for(int i = 0; i < services.getSize(); ++i)// loop through services
+        { Service s = (Service) services.get(i);
+            total += s.calculateBill();// add service cost to total
         }
 
         return total;
@@ -126,34 +100,36 @@ public class Customer extends Person
     // recursive method that calculates total bill for all services
     public double totalServicesRecursive(int index)
     {
-        if(index == numServices) // base case: index reaches number of services, returns 0
+        if(index == services.getSize()) // base case: end of list reached returns 0
             return 0.0;
-
-        return services[index].calculateBill() + totalServicesRecursive(index + 1); // recursive case
+        Service s = (Service) services.get(index);
+        return s.calculateBill() + totalServicesRecursive(index + 1); // recursive case
     }
 
     public double totalSpentRecursive(int index)// Recursive method that calculates total bill for all reservations and services
     {
-        if(index == numReservations)// Base case: if all reservations processed, continue with services recursively
+        if(index == reservations.getSize())// Base case: if all reservations processed, continue with services recursively
             return totalServicesRecursive(0);
-        
-        return reservations[index].calculateBill() + totalSpentRecursive(index+1);// Recursive case: adds current reservation bill to result of next call
+        Reservation r = (Reservation) reservations.get(index);
+        return r.calculateBill() + totalSpentRecursive(index+1);// Recursive case: adds current reservation bill to result of next call
     }
 
-    // checks if customer currently has at least one reservation
+    // Checks if the customer has any reservations
     public boolean hasReservations()
     {
-        return numReservations > 0;
+        return !reservations.isEmpty();
     }
 
-    // removes all services when customer no longer has any reservation
+    // Checks if the customer has any services
+    public boolean hasServices()
+    {
+        return !services.isEmpty();
+    }
+
+   // Resets the services list to a new empty list
     public void clearServices()
     {
-        for(int i = 0; i < numServices; i++)
-        {
-            services[i] = null;
-        }
-        numServices = 0;
+        services = new LinkedList();
     }
 
     public String getRole() // returns role (no parameter) from abstract class Person
@@ -161,17 +137,17 @@ public class Customer extends Person
         return "Customer";
     }
 
-    public void  displayReservations()
+    public void  displayReservations()// Loops through and prints all reservations for the customer
     {
-        if(numReservations != 0) // makes sure at least 1 reservation exists
-        {
-            for(int i = 0 ; i< numReservations ; i++) // traverses through array of object printing each one (toString is used)
-            {
-                System.out.println(reservations[i]);
-            }
-        }
-        else
+        if(reservations.isEmpty()) // checks if list is empty
+        {   
             System.out.println("No reservations Found");
+            return;
+        }
+        for(int i = 0 ; i< reservations.getSize() ; i++) // traverses list printing objects
+        {   
+            System.out.println(reservations.get(i));
+        }
     }
 
     public String toString() // returns info in string format (no parameters)
@@ -180,14 +156,10 @@ public class Customer extends Person
         "\nID: "+getId()+
         "\nPhone: "+getPhone()+
         "\nRole: "+getRole()+
-        "\nReservations: "+numReservations+
-        "\nServices: "+numServices;
+        "\nReservations: "+reservations.getSize()+
+        "\nServices: "+services.getSize();
  
     }
- // checks if customer currently has at least one service
-    public boolean hasServices()
-    {
-        return numServices > 0;
-    }
+ 
 }
 
