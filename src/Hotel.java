@@ -1,74 +1,50 @@
-public class Hotel {
+import java.io.Serializable;
+public class Hotel implements Serializable 
+{
 	
     // hotel name
     private String hotelName;
 
-    // array of room objects managed by hotel
-    private Room[] rooms;
+    private LinkedList rooms;
+    private LinkedList customers;
 
-    // array of customer objects managed by hotel
-    private Customer[] customers;
-
-    // current number of rooms stored in rooms array
-    private int numRooms;
-
-    // current number of customers stored in customers array
-    private int numCustomers;
-
-    // maximum number of rooms hotel can store
-    private static final int MAX_ROOMS = 50;
-
-    // maximum number of customers hotel can store
-    private static final int MAX_CUSTOMERS = 100;
-
-    // counter used to generate unique reservation ids
     private int nextReservationNumber;
-
-    // constructor initializes hotel name, arrays, counters, and reservation number
+    // constructor initializes hotel name, linked lists, and reservation number
     public Hotel(String hotelName) {
         this.hotelName = hotelName;
-        rooms = new Room[MAX_ROOMS];
-        customers = new Customer[MAX_CUSTOMERS];
-        numRooms = 0;
-        numCustomers = 0;
+        rooms = new LinkedList();
+        customers = new LinkedList();
         nextReservationNumber = 1;
     }
 
-    // adds a room object to hotel after checking capacity and duplication
+    // adds a room object to hotel after checking duplication
     public boolean addRoom(Room r)
     {
-        if (numRooms >= MAX_ROOMS) // making sure there is space for room in array
-        {
-        return false;
-        }
-
         if(searchRoom(r.getRoomNumber()) != null) // making sure  a room with the same number doesnt already exist
         {
             return false;
         }
 
-        // if room is DeluxeRoom, store a copied DeluxeRoom object in array
+        // if room is DeluxeRoom, store a copied DeluxeRoom object in  linked list
         if(r instanceof DeluxeRoom) // checking if room is of type DeluxeRoom
-        {rooms[numRooms++] = new DeluxeRoom((DeluxeRoom) r); return true;}// calling copy copy constructor of DeluxeeRoom and adding the copy to rooms array
+        {rooms.add(new DeluxeRoom((DeluxeRoom) r));}// calling copy copy constructor of DeluxeeRoom and adding the copy to rooms linked list
 
-        // if room is StandardRoom, store a copied StandardRoom object in array
+        // if room is StandardRoom, store a copied StandardRoom object in  linked list
         else if(r instanceof StandardRoom)// checking if room is of type StandardRoom
-        { rooms[numRooms++] = new StandardRoom((StandardRoom) r); return true;}// calling copy copy constructor of StandardRoom and adding the copy to rooms array
+        { rooms.add(new StandardRoom((StandardRoom) r));}// calling copy copy constructor of StandardRoom and adding the copy to rooms  linked list
 
         // otherwise store a copied normal Room object
         else
-        {rooms[numRooms++] = new Room(r); return true;}// calling copy copy constructor of Room and adding the copy to rooms array
+        {rooms.add(new Room(r));}// calling copy copy constructor of Room and adding the copy to rooms  linked list
+        return true;
     }
 
-    // removes a room using room number by shifting elements left after deletion
+    // removes a room using room number from the linked list
     public boolean removeRoom(int roomNumber) {
-        for (int i = 0; i < numRooms; i++) {
-            if (rooms[i].getRoomNumber() == roomNumber) {
-                for (int j = i; j < numRooms - 1; j++) {
-                    rooms[j] = rooms[j + 1];
-                }
-                rooms[numRooms - 1] = null;
-                numRooms--;
+        for (int i = 0; i < rooms.getSize(); i++) 
+            {Room r = (Room) rooms.get(i);
+            if (r.getRoomNumber() == roomNumber) {
+                rooms.removeAt(i);
                 return true;
             }
         }
@@ -77,9 +53,10 @@ public class Hotel {
 
     // searches for a room by room number and returns it if found
     public Room searchRoom(int roomNumber) {
-        for (int i = 0; i < numRooms; i++) {
-            if (rooms[i].getRoomNumber() == roomNumber) {
-                return rooms[i];
+        for (int i = 0; i < rooms.getSize(); i++) 
+            {Room r = (Room) rooms.get(i);
+            if (r.getRoomNumber() == roomNumber) {
+                return r;
             }
         }
         return null;
@@ -88,9 +65,10 @@ public class Hotel {
     // displays only rooms that are currently available
     public void displayAvailableRooms() {
         boolean found = false;
-        for (int i = 0; i < numRooms; i++) {
-            if (rooms[i].isAvailable()) {
-                System.out.println(rooms[i]);
+        for (int i = 0; i < rooms.getSize(); i++) 
+            {Room r = (Room) rooms.get(i);
+            if (r.isAvailable()) {
+                System.out.println(r);
                 found = true;
             }
         }
@@ -99,42 +77,38 @@ public class Hotel {
         }
     }
 
-    // adds a customer to hotel after checking duplicate id and array capacity
+    // adds a customer to hotel after checking duplicate id 
     public boolean addCustomer(Customer c) {
         if (searchCustomer(c.getId()) != null) {
             System.out.println("Customer already registered");
             return false;
         }
 
-        if (numCustomers >= MAX_CUSTOMERS) {
-            return false;
-        }
-
-        customers[numCustomers] = c;
-        numCustomers++;
+        customers.add(c);
         return true;
     }
 
     // searches for a customer by id and returns matching customer object
     public Customer searchCustomer(String customerId) {
-        for (int i = 0; i < numCustomers; i++) {
-            if (customers[i].getId().equals(customerId)) {
-                return customers[i];
+        for (int i = 0; i < customers.getSize(); i++) 
+            {Customer c = (Customer) customers.get(i);
+            if (c.getId().equals(customerId)) {
+                return c;
             }
         }
         return null;
     }
 
     // creates a reservation for a customer after validating customer, room, availability, and dates
-    public boolean makeReservation(String customerId, int roomNumber, int checkInDay, int checkOutDay) {
-        // first search for customer in customer array
+    public boolean makeReservation(String customerId, int roomNumber, int checkInDay, int checkOutDay)throws RoomUnavailableException {
+        // first search for customer in customer linked list
         Customer customer = searchCustomer(customerId);
         if (customer == null) {
             System.out.println("Customer not found");
             return false;
         }
 
-        // search for requested room in room array
+        // search for requested room in room linked list
         Room room = searchRoom(roomNumber);
         if (room == null) {
             System.out.println("Room not found");
@@ -143,8 +117,7 @@ public class Hotel {
 
         // reservation cannot be made if room is already reserved
         if (!room.isAvailable()) {
-            System.out.println("Room not available");
-            return false;
+          throw new RoomUnavailableException(roomNumber);
         }
 
         // make sure check-out day is after check-in day
@@ -159,7 +132,7 @@ public class Hotel {
         // create new reservation object using entered data
         Reservation res = new Reservation(reservationId, customerId, room, checkInDay, checkOutDay);
 
-        // add created reservation to customer's reservation array
+        // add created reservation to customer's reservation linked list
         if (!customer.addReservation(res)) {
             System.out.println("Customer reservation list full");
             return false;
@@ -196,7 +169,7 @@ public class Hotel {
         // mark reservation as inactive
         res.setActive(false);
 
-        // remove reservation from customer's reservation array
+        // remove reservation from customer's reservation linked list
         customer.removeReservation(reservationId);
 
         // if customer has no remaining reservations, remove all added services
@@ -212,16 +185,33 @@ public class Hotel {
     // recursive method that calculates total hotel revenue from all customers
     public double totalRevenueRecursive(int index) {
         // base case: all customers processed
-        if (index == numCustomers) {
+        if (index == customers.getSize()) {
             return 0.0;
+            
         }
 
         // recursive case: current customer bill + remaining customers bills
-        return customers[index].calculateBill() + totalRevenueRecursive(index + 1);
+        Customer c = (Customer) customers.get(index);
+        return c.calculateBill() + totalRevenueRecursive(index + 1);
     }
 
     // returns summary information about hotel
     public String toString() {
-        return "Hotel: " + hotelName + " | Rooms: " + numRooms + " | Customers: " + numCustomers;
+        return "Hotel: " + hotelName + " | Rooms: " + rooms.getSize() + " | Customers: " + customers.getSize();
+    }
+
+     // Getter for hotel name
+    public String getHotelName() {
+        return hotelName;
+    }
+
+    // Getter for rooms linked list — used by GUI panels to display rooms
+    public LinkedList getRooms() {
+        return rooms;
+    }
+
+    // Getter for customers linked list — used by GUI panels to display customers
+    public LinkedList getCustomers() {
+        return customers;
     }
 }
