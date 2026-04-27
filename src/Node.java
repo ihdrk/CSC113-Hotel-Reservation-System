@@ -3,15 +3,15 @@
  public class Node implements Serializable
 {   // Node class used by Linked List
 
-    private Object data;// The data stored in this node
-    private Node nextNode;// Reference to the next node in the linked list
+    public Object data;// The data stored in this node
+    public Node nextNode;// Reference to the next node in the linked list
     
     public Node(Object data)//Constructor to create a new node.
     {
         this.data = data;
         this.nextNode = null;
     }
-    
+
     public Node(Object data, Node nextNode) 
     {
         this.data = data;
