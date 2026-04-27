@@ -1,27 +1,34 @@
- public class Node<T>
+ import java.io.Serializable;
+ 
+ public class Node implements Serializable
 {   // Node class used by Linked List
 
-    private T data;// The data stored in this node
-    private Node<T>next;// Reference to the next node in the linked list
+    private Object data;// The data stored in this node
+    private Node nextNode;// Reference to the next node in the linked list
     
-    public Node(T data)//Constructor to create a new node.
+    public Node(Object data)//Constructor to create a new node.
     {
         this.data = data;
-        this.next = null;
+        this.nextNode = null;
     }
-
-    public T getData() // returns data stored in node
+    
+    public Node(Object data, Node nextNode) 
+    {
+        this.data = data;
+        this.nextNode = nextNode;
+    }
+    public Object getData() // returns data stored in node
     {
         return data;
     }
     
-    public Node<T> getNext()//returns the reference to the next node in the list.
+    public Node getNext()//returns the reference to the next node in the list.
     {
-        return next;
+        return nextNode;
     }
 
-    public void setNext(Node<T> next)//Updates the reference to the next node.
+    public void setNext(Node next)//Updates the reference to the next node.
     {
-        this.next = next;
+        this.nextNode = next;
     }
 }
