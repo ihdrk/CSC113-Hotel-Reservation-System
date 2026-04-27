@@ -1,5 +1,8 @@
 // This class represents a standard type of room
-public class StandardRoom extends Room {
+
+import java.io.Serializable;
+
+public class StandardRoom extends Room implements Serializable{
 
     // Number of beds available in the room
     private int numBeds;

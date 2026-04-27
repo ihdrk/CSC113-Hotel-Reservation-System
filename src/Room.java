@@ -1,5 +1,8 @@
 // This class represents a room in a hotel system
-public class Room {
+
+import java.io.Serializable;
+
+public class Room implements Serializable{
 
     // Unique identifier for the room
     private int roomNumber;

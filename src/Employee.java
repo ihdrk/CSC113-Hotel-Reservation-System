@@ -1,4 +1,6 @@
-public class Employee extends Person
+import java.io.Serializable;
+
+public class Employee extends Person implements Serializable
 {   // private attributes only accessed directly inside class
     private String position;
     private double salary;

@@ -1,6 +1,9 @@
 // This class represents a deluxe type of room
 // It extends StandardRoom and adds more luxury features
-public class DeluxeRoom extends StandardRoom {
+
+import java.io.Serializable;
+
+public class DeluxeRoom extends StandardRoom implements Serializable{
 
     // Indicates if the room includes a jacuzzi
     private boolean hasJacuzzi;

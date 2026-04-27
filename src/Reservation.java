@@ -1,6 +1,7 @@
+import java.io.Serializable;
 // This class represents a reservation made by a customer
 // It implements Payable to allow bill calculation
-public class Reservation implements Payable {
+public class Reservation implements Payable , Serializable {
 
     // Unique ID for the reservation
     private String reservationId;

@@ -1,7 +1,8 @@
+import java.io.Serializable;
 // This class represents an extra hotel service added for a customer
 // Examples: Breakfast, Lunch, Dinner, Laundry, Spa, Airport Pickup
 // It implements Payable so each service can calculate its own cost
-public class Service implements Payable
+public class Service implements Payable , Serializable
 {
     // name of the selected hotel service
     private String serviceName;
