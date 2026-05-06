@@ -214,4 +214,12 @@ public class Hotel implements Serializable
     public LinkedList getCustomers() {
         return customers;
     }
+
+    public int getNumRooms() {
+    return rooms.getSize();
+    }
+
+    public int getNumCustomers() {
+    return customers.getSize();
+    }
 }

@@ -58,9 +58,10 @@ public class LinkedList implements Serializable
             if(firstNode == null)// If list became empty after removal
             {
                 lastNode = null;
-                --size;
-                return true;
             }
+            --size;
+            return true;
+            
         }
         // Case 2: Removing an element in the middle or end
         Node current = firstNode;
