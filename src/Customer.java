@@ -150,6 +150,18 @@ public class Customer extends Person implements Serializable
         }
     }
 
+    // Returns number of reservations — used by GUI panels
+    public int getNumReservations() 
+    {
+        return reservations.getSize();
+    }
+
+    // Returns number of services — used by GUI panels
+    public int getNumServices() 
+    {
+        return services.getSize();
+    }
+
     public String toString() // returns info in string format (no parameters)
     {
         return "\nName: "+getName()+
