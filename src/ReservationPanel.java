@@ -1,5 +1,5 @@
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class ReservationPanel extends JPanel {
 
@@ -131,8 +131,11 @@ public class ReservationPanel extends JPanel {
             boolean success = hotel.makeReservation(customerId, roomNum, checkIn, checkOut);
 
             if (success) {
+                 Customer customer = hotel.searchCustomer(customerId);
+                Reservation latest = customer.getLastReservation();
                 ResultsFrame.showSuccess("Reservation Confirmed",
                         "Reservation created successfully!" +
+                                "\nReservation ID: " + latest.getReservationId() +
                                 "\nRoom: " + roomNum +
                                 "\nCheck-in: Day " + checkIn +
                                 "\nCheck-out: Day " + checkOut);
@@ -245,6 +248,7 @@ public class ReservationPanel extends JPanel {
         }
 
         String info = "Customer: " + c.getName() + " (ID: " + c.getId() + ")\n" +
+                "Reservation IDs: " + c.getReservationIds() + "\n" +
                 "Reservations: " + c.getNumReservations() + "\n" +
                 "Services: " + c.getNumServices() + "\n" +
                 "Total Bill: $" + String.format("%.2f", c.calculateBill());
