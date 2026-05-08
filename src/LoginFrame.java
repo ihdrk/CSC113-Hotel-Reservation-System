@@ -1,133 +1,82 @@
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
-public class ResultsFrame extends JFrame {
+public class LoginFrame extends JFrame {
 
-    private JTextArea resultArea;
-    private JButton closeButton;
+    private Hotel hotel;
+    private JButton enterButton;
 
-    public ResultsFrame(String title, String content, Color accentColor) {
+    public LoginFrame(Hotel hotel) {
+        this.hotel = hotel;
 
-        setTitle(title);
-
-        setSize(550, 400);
-
-        setLocationRelativeTo(null);
-
+        setTitle("KSU Hotel");
+        setSize(500, 400);
         setResizable(false);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         getContentPane().setBackground(UITheme.BG_DARK);
 
-        setLayout(new BorderLayout());
-
-        buildUI(title, content, accentColor);
+        buildUI();
     }
 
-    private void buildUI(String title, String content, Color accentColor) {
+    private void buildUI() {
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-        // TOP BAR
+        add(Box.createVerticalGlue());
 
-        JPanel topBar = new JPanel(new BorderLayout());
+        JLabel logoLabel = new JLabel("KSU HOTEL");
+        logoLabel.setFont(UITheme.TITLE);
+        logoLabel.setForeground(UITheme.GOLD);
+        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(logoLabel);
 
-        topBar.setBackground(UITheme.BG_CARD);
+        add(Box.createRigidArea(new Dimension(0, 10)));
 
-        topBar.setPreferredSize(new Dimension(0, 50));
+        JLabel subtitleLabel = new JLabel("Luxury Management System");
+        subtitleLabel.setFont(UITheme.BODY);
+        subtitleLabel.setForeground(UITheme.TEXT_MUTED);
+        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(subtitleLabel);
 
-        JPanel stripe = new JPanel();
+        add(Box.createRigidArea(new Dimension(0, 20)));
 
-        stripe.setBackground(accentColor);
+        JPanel separator = new JPanel();
+        separator.setBackground(UITheme.GOLD);
+        separator.setMaximumSize(new Dimension(200, 2));
+        separator.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(separator);
 
-        stripe.setPreferredSize(new Dimension(6, 0));
+        add(Box.createRigidArea(new Dimension(0, 20)));
 
-        topBar.add(stripe, BorderLayout.WEST);
+        enterButton = UITheme.makeButton("ENTER SYSTEM");
+        enterButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        enterButton.addActionListener(e -> enterButtonClicked());
+        add(enterButton);
 
-        JLabel titleLabel = new JLabel(" " + title);
+        add(Box.createRigidArea(new Dimension(0, 15)));
 
-        titleLabel.setFont(UITheme.HEADING);
+        JLabel footerLabel = new JLabel("Staff Portal");
+        footerLabel.setFont(UITheme.SMALL);
+        footerLabel.setForeground(UITheme.TEXT_MUTED);
+        footerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(footerLabel);
 
-        titleLabel.setForeground(UITheme.TEXT_WHITE);
-
-        topBar.add(titleLabel, BorderLayout.CENTER);
-
-        add(topBar, BorderLayout.NORTH);
-
-        // CONTENT AREA
-
-        resultArea = new JTextArea(content);
-
-        resultArea.setEditable(false);
-
-        resultArea.setFont(UITheme.BODY);
-
-        resultArea.setBackground(UITheme.BG_DARK);
-
-        resultArea.setForeground(UITheme.TEXT_WHITE);
-
-        resultArea.setLineWrap(true);
-
-        resultArea.setWrapStyleWord(true);
-
-        resultArea.setBorder(
-                BorderFactory.createEmptyBorder(15, 15, 15, 15)
-        );
-
-        JScrollPane scrollPane = new JScrollPane(resultArea);
-
-        scrollPane.setBackground(UITheme.BG_DARK);
-
-        scrollPane.getViewport().setBackground(UITheme.BG_DARK);
-
-        scrollPane.setBorder(null);
-
-        add(scrollPane, BorderLayout.CENTER);
-
-        // BOTTOM BAR
-
-        JPanel bottomBar = new JPanel(
-                new FlowLayout(FlowLayout.RIGHT, 15, 10)
-        );
-
-        bottomBar.setBackground(UITheme.BG_CARD);
-
-        closeButton = UITheme.makeButton("Close");
-
-        closeButton.addActionListener(e -> dispose());
-
-        bottomBar.add(closeButton);
-
-        add(bottomBar, BorderLayout.SOUTH);
+        add(Box.createVerticalGlue());
     }
 
-    // Normal result
-
-    public static void showResult(String title, String content) {
-
-        new ResultsFrame(
-                title,
-                content,
-                UITheme.GOLD
-        ).setVisible(true);
+    private void enterButtonClicked() {
+        new MainDashboardFrame(hotel).setVisible(true);
+        dispose();
     }
 
-    // Success result
-
-    public static void showSuccess(String title, String content) {
-
-        new ResultsFrame(
-                title,
-                content,
-                UITheme.SUCCESS
-        ).setVisible(true);
-    }
-
-    // Error result
-
-    public static void showError(String title, String content) {
-
-        new ResultsFrame(
-                title,
-                content,
-                UITheme.ERROR
-        ).setVisible(true);
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            Hotel hotel = HotelFileManager.loadHotel();
+            new LoginFrame(hotel).setVisible(true);
+        });
     }
 }
+
+
+// --- End of LoginFrame.java --- 
