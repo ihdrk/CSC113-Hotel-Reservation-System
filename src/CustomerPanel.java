@@ -1,5 +1,5 @@
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class CustomerPanel extends JPanel {
 
@@ -91,22 +91,41 @@ public class CustomerPanel extends JPanel {
 
     // Registers a new customer
     private void registerClicked() {
+        // Read and clean user input from text fields
         String name = nameField.getText().trim();
         String id = idField.getText().trim();
         String phone = phoneField.getText().trim();
-
+        // checking if all fields are filled
         if (name.isEmpty() || id.isEmpty() || phone.isEmpty()) {
             ResultsFrame.showError("Missing Fields", "Please fill in all fields.");
             return;
         }
-
+        // checking name is only letters
+        if (!isValidName(name)) {
+            ResultsFrame.showError("Invalid Name",
+            "Name must contain letters and spaces only.");
+            return;
+        }
+        // checking id is only digits
+        if (!isOnlyDigits(id)) {
+            ResultsFrame.showError("Invalid ID",
+            "Customer ID must contain numbers only.");
+            return;
+        }
+        // checking phon numeber is only digits
+        if (!isOnlyDigits(phone)) {
+            ResultsFrame.showError("Invalid Phone",
+            "Phone number must contain numbers only.");
+            return;
+        }
+        // Create new customer object using entered information
         Customer customer = new Customer(name, id, phone);
-
+        // Add customer to hotel linked list if ID is unique
         if (hotel.addCustomer(customer)) {
             ResultsFrame.showSuccess("Registered",
                     "Customer registered successfully.\nName: " + name + "\nID: " + id);
 
-            nameField.setText("");
+            nameField.setText("");// Clear text fields after successful registration
             idField.setText("");
             phoneField.setText("");
 
@@ -159,13 +178,13 @@ public class CustomerPanel extends JPanel {
             return;
         }
 
-        Customer c = hotel.searchCustomer(id);
+        Customer c = hotel.searchCustomer(id);// Search for customer using entered ID
 
         if (c == null) {
             ResultsFrame.showError("Not Found", "No customer found with ID: " + id);
             return;
         }
-
+        // Build customer information text for results window
         String info = "Name: " + c.getName() + "\n" +
                 "ID: " + c.getId() + "\n" +
                 "Phone: " + c.getPhone() + "\n" +
@@ -182,10 +201,10 @@ public class CustomerPanel extends JPanel {
             ResultsFrame.showError("No Customers", "No customers registered yet.");
             return;
         }
-
+        // StringBuilder used to efficiently build customer list text
         StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < hotel.getCustomers().getSize(); i++) {
+        
+        for (int i = 0; i < hotel.getCustomers().getSize(); i++) {// Traverse customer linked list and display all customers
             Customer c = (Customer) hotel.getCustomers().get(i);
 
             sb.append("Name: ").append(c.getName())
@@ -201,4 +220,26 @@ public class CustomerPanel extends JPanel {
         ResultsFrame.showResult("All Customers (" + hotel.getCustomers().getSize() + ")",
                 sb.toString());
     }
+
+
+
+    private boolean isOnlyDigits(String text) {// Checks if text contains numbers only
+    for (int i = 0; i < text.length(); i++) {
+        if (!Character.isDigit(text.charAt(i))) {
+            return false;
+        }
+    }
+    return true;
+}
+
+    private boolean isValidName(String name) {// Checks if name contains only letters and spaces
+        for (int i = 0; i < name.length(); i++) {
+            char ch = name.charAt(i);
+
+            if (!Character.isLetter(ch) && ch != ' ') {
+            return false;
+        }
+    }
+    return true;
+}
 }
