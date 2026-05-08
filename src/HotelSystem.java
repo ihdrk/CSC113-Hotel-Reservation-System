@@ -1,100 +1,98 @@
 import java.util.Scanner;
+import java.io.IOException;
 
-// Main class that runs the hotel reservation system
-// It displays the menu, takes user input, and calls the correct methods
 public class HotelSystem {
+
     public static void main(String[] args) {
-        // Scanner object used to read input from the user
+
+        // Scanner to read input from user
         Scanner sc = new Scanner(System.in);
 
-        // Create hotel object
-        Hotel hotel = new Hotel("KSU Hotel");
+        // Load saved hotel data from file
+        Hotel hotel = HotelFileManager.loadHotel();
 
-        // Create some employee objects to display hotel staff
+        // Staff objects used in option 10
         Employee emp1 = new Employee("Ahmed Al-Rashid", "E1", "0512345678", "Receptionist", 5000);
         Employee emp2 = new Employee("Majed Al-Qahtani", "E2", "0587654321", "Manager", 9000);
 
-        // Create room objects
-        StandardRoom s1 = new StandardRoom(101, 150, 2, true);
-        StandardRoom s2 = new StandardRoom(102, 120, 1, false);
-        DeluxeRoom d1 = new DeluxeRoom(201, 300, 2, true, true,true, 75.0);
-        DeluxeRoom d2 = new DeluxeRoom(202, 280, 2, true, false,true, 50.0);
-
-        // Add rooms to the hotel
-        hotel.addRoom(s1);
-        hotel.addRoom(s2);
-        hotel.addRoom(d1);
-        hotel.addRoom(d2);
-
-        // Variable controls the menu loop
+        // Controls the menu loop
         boolean running = true;
 
-        // Main menu loop keeps running until user chooses Exit
         while (running) {
-            printMenu();
-            int choice = sc.nextInt();
-            sc.nextLine();
 
-            // Switch used to execute the correct operation based on user choice
+            printMenu();
+
+            // Read menu choice with input handling
+            int choice = readIntInRange(sc, "Enter choice: ", 1, 11);
+
             switch (choice) {
+
                 case 1:
-                    // Register a new customer in the hotel system
                     registerCustomer(hotel, sc);
                     break;
+
                 case 2:
-                    // Display all available rooms
                     hotel.displayAvailableRooms();
                     break;
+
                 case 3:
-                    // Make a reservation for a customer
-                    makeReservation(hotel, sc);
+                    try {
+                        makeReservation(hotel, sc);
+                    } catch (RoomUnavailableException e) {
+                        System.out.println("Room unavailable: " + e.getMessage());
+                    }
                     break;
+
                 case 4:
-                    // Cancel an existing reservation
                     cancelReservation(hotel, sc);
                     break;
+
                 case 5:
-                    // Display all reservations and added services for a customer
                     viewCustomerReservations(hotel, sc);
                     break;
+
                 case 6:
-                    // Display the total bill for a customer
                     viewBill(hotel, sc);
                     break;
+
                 case 7:
-                    // Add an extra hotel service such as breakfast, lunch, dinner, laundry, spa, or airport pickup
                     addServiceToCustomer(hotel, sc);
                     break;
+
                 case 8:
-                    // Remove a service from a customer using service name
                     removeServiceFromCustomer(hotel, sc);
                     break;
+
                 case 9:
-                    // Display total revenue of the hotel using recursive method
                     System.out.println("Total hotel revenue: $" + hotel.totalRevenueRecursive(0));
                     break;
+
                 case 10:
-                    // Display hotel staff information
-                    System.out.println(emp1 +"\n"+ emp2);
+                    System.out.println(emp1);
+                    System.out.println(emp2);
                     break;
+
                 case 11:
-                    // Stop the loop and exit the system
+                    // Save data before exiting
+                    try {
+                        HotelFileManager.saveHotel(hotel);
+                        System.out.println("Data saved successfully.");
+                    } catch (IOException e) {
+                        System.out.println("Save failed: " + e.getMessage());
+                    }
+
                     running = false;
                     break;
-                default:
-                    // Runs if user enters invalid menu option
-                    System.out.println("Invalid option.");
             }
         }
 
-        // Closing message
         System.out.println("Thank you! Goodbye.");
         sc.close();
     }
 
-    // Prints the menu options shown to the user
+    // Prints the main menu
     public static void printMenu() {
-        System.out.println(" ");
+        System.out.println();
         System.out.println("===== KSU Hotel =====");
         System.out.println("1. Register as customer");
         System.out.println("2. View available rooms");
@@ -106,67 +104,177 @@ public class HotelSystem {
         System.out.println("8. Remove service");
         System.out.println("9. View total hotel revenue");
         System.out.println("10. View hotel staff");
-        System.out.println("11. Exit");
-        System.out.print("Enter choice: ");
+        System.out.println("11. Save and Exit");
     }
 
-    // Registers a new customer by taking name, ID, and phone from user
+    // Reads an integer and keeps asking if the user enters letters
+    public static int readInt(Scanner sc, String message) {
+        while (true) {
+            System.out.print(message);
+
+            if (sc.hasNextInt()) {
+                int value = sc.nextInt();
+                sc.nextLine();
+                return value;
+            }
+
+            System.out.println("Invalid input. Please enter a number.");
+            sc.nextLine();
+        }
+    }
+
+    // Reads an integer within a specific range
+    public static int readIntInRange(Scanner sc, String message, int min, int max) {
+        while (true) {
+            int value = readInt(sc, message);
+
+            if (value >= min && value <= max) {
+                return value;
+            }
+
+            System.out.println("Invalid input. Enter a number from " + min + " to " + max + ".");
+        }
+    }
+
+    // Reads text and does not allow empty input
+    public static String readRequiredText(Scanner sc, String message) {
+        while (true) {
+            System.out.print(message);
+            String value = sc.nextLine().trim();
+
+            if (!value.isEmpty()) {
+                return value;
+            }
+
+            System.out.println("Invalid input. This field cannot be empty.");
+        }
+    }
+
+    // Reads a name and does not allow numbers
+    public static String readName(Scanner sc, String message) {
+        while (true) {
+            String name = readRequiredText(sc, message);
+
+            if (isValidName(name)) {
+                return name;
+            }
+
+            System.out.println("Invalid name. Name must contain letters and spaces only.");
+        }
+    }
+
+    // Checks if name contains only letters and spaces
+    public static boolean isValidName(String name) {
+        for (int i = 0; i < name.length(); i++) {
+            char ch = name.charAt(i);
+
+            if (!Character.isLetter(ch) && ch != ' ') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Reads an ID and does not allow letters
+    public static String readNumericId(Scanner sc, String message) {
+        while (true) {
+            String id = readRequiredText(sc, message);
+
+            if (isOnlyDigits(id)) {
+                return id;
+            }
+
+            System.out.println("Invalid ID. ID must contain numbers only.");
+        }
+    }
+
+    // Reads a phone number and does not allow letters
+    public static String readPhone(Scanner sc, String message) {
+        while (true) {
+            String phone = readRequiredText(sc, message);
+
+            if (isOnlyDigits(phone)) {
+                return phone;
+            }
+
+            System.out.println("Invalid phone number. Phone must contain numbers only.");
+        }
+    }
+
+    // Checks if the text contains digits only
+    public static boolean isOnlyDigits(String text) {
+        for (int i = 0; i < text.length(); i++) {
+            char ch = text.charAt(i);
+
+            if (!Character.isDigit(ch)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Registers a new customer
     public static void registerCustomer(Hotel hotel, Scanner sc) {
-        System.out.print("Enter name: ");
-        String name = sc.nextLine();
 
-        System.out.print("Enter ID: ");
-        String id = sc.nextLine();
-
-        System.out.print("Enter phone: ");
-        String phone = sc.nextLine();
+        String name = readName(sc, "Enter name: ");
+        String id = readNumericId(sc, "Enter ID: ");
+        String phone = readPhone(sc, "Enter phone: ");
 
         Customer customer = new Customer(name, id, phone);
 
         if (hotel.addCustomer(customer)) {
             System.out.println("Customer registered successfully.");
         } else {
-            System.out.println("Failed to register customer.");
+            System.out.println("Failed to register customer. Customer ID already exists.");
         }
     }
 
-    // Makes a reservation by taking customer ID, room number, and stay period
-    public static void makeReservation(Hotel hotel, Scanner sc) {
-        System.out.print("Enter customer ID: ");
-        String customerId = sc.nextLine();
+    // Makes a reservation for a customer
+    public static void makeReservation(Hotel hotel, Scanner sc) throws RoomUnavailableException {
 
-        System.out.print("Enter room number: ");
-        int roomNumber = sc.nextInt();
+        String customerId = readNumericId(sc, "Enter customer ID: ");
 
-        System.out.print("Enter check-in day: ");
-        int checkInDay = sc.nextInt();
+        int roomNumber = readInt(sc, "Enter room number: ");
+        int checkInDay = readIntInRange(sc, "Enter check-in day: ", 1, 31);
+        int checkOutDay = readIntInRange(sc, "Enter check-out day: ", 1, 31);
 
-        System.out.print("Enter check-out day: ");
-        int checkOutDay = sc.nextInt();
-        sc.nextLine();
+        // Check-out must be after check-in
+        if (checkOutDay <= checkInDay) {
+            System.out.println("Invalid dates. Check-out day must be after check-in day.");
+            return;
+        }
 
-        hotel.makeReservation(customerId, roomNumber, checkInDay, checkOutDay);
+        boolean success = hotel.makeReservation(customerId, roomNumber, checkInDay, checkOutDay);
+
+        if (success) {
+            System.out.println("Reservation created successfully.");
+        } else {
+            System.out.println("Reservation failed. Check customer ID or room number.");
+        }
     }
 
-    // Cancels an existing reservation using customer ID and reservation ID
+    // Cancels an existing reservation
     public static void cancelReservation(Hotel hotel, Scanner sc) {
-        System.out.print("Enter customer ID: ");
-        String customerId = sc.nextLine();
 
-        System.out.print("Enter reservation ID: ");
-        String reservationId = sc.nextLine();
+        String customerId = readNumericId(sc, "Enter customer ID: ");
+        String reservationId = readRequiredText(sc, "Enter reservation ID: ");
 
-        if (!hotel.cancelReservation(customerId, reservationId)) {
-            System.out.println("Cancellation failed.");
+        if (hotel.cancelReservation(customerId, reservationId)) {
+            System.out.println("Reservation cancelled successfully.");
+        } else {
+            System.out.println("Cancellation failed. Check customer ID and reservation ID.");
         }
     }
 
-    // Displays all reservations and services for a specific customer
+    // Displays reservations and services for a customer
     public static void viewCustomerReservations(Hotel hotel, Scanner sc) {
-        System.out.print("Enter customer ID: ");
-        String customerId = sc.nextLine();
+
+        String customerId = readNumericId(sc, "Enter customer ID: ");
 
         Customer customer = hotel.searchCustomer(customerId);
+
         if (customer == null) {
             System.out.println("Customer not found.");
         } else {
@@ -175,12 +283,13 @@ public class HotelSystem {
         }
     }
 
-    // Displays customer bill using both loop and recursion
+    // Displays the bill for a customer
     public static void viewBill(Hotel hotel, Scanner sc) {
-        System.out.print("Enter customer ID: ");
-        String customerId = sc.nextLine();
+
+        String customerId = readNumericId(sc, "Enter customer ID: ");
 
         Customer customer = hotel.searchCustomer(customerId);
+
         if (customer == null) {
             System.out.println("Customer not found.");
         } else {
@@ -189,13 +298,11 @@ public class HotelSystem {
         }
     }
 
-    // Adds a service to a specific customer
-    // Customer must already have at least one reservation before adding a service
+    // Adds a service to a customer
     public static void addServiceToCustomer(Hotel hotel, Scanner sc) {
-        System.out.print("Enter customer ID: ");
-        String customerId = sc.nextLine();
 
-        // Search for customer before adding service
+        String customerId = readNumericId(sc, "Enter customer ID: ");
+
         Customer customer = hotel.searchCustomer(customerId);
 
         if (customer == null) {
@@ -203,13 +310,12 @@ public class HotelSystem {
             return;
         }
 
-        // customer must already have at least one reservation before adding a service
+        // Customer must have a reservation before adding services
         if (!customer.hasReservations()) {
             System.out.println("Customer must have at least one reservation first.");
             return;
         }
 
-        // Display available services
         System.out.println("Choose service:");
         System.out.println("1. Breakfast - 30");
         System.out.println("2. Lunch - 45");
@@ -217,74 +323,64 @@ public class HotelSystem {
         System.out.println("4. Laundry - 25");
         System.out.println("5. Spa - 100");
         System.out.println("6. Airport Pickup - 80");
-        System.out.print("Enter choice: ");
-        int choice = sc.nextInt();
-        sc.nextLine();
 
-        // Service reference that will store selected service object
+        int choice = readIntInRange(sc, "Enter choice: ", 1, 6);
+
         Service service = null;
 
-        // Create the correct service object depending on user choice
         switch (choice) {
+
             case 1:
                 service = new Service("Breakfast", 30);
                 break;
+
             case 2:
                 service = new Service("Lunch", 45);
                 break;
+
             case 3:
                 service = new Service("Dinner", 50);
                 break;
+
             case 4:
                 service = new Service("Laundry", 25);
                 break;
+
             case 5:
                 service = new Service("Spa", 100);
                 break;
+
             case 6:
                 service = new Service("Airport Pickup", 80);
                 break;
-            default:
-                System.out.println("Invalid service.");
-                return;
         }
 
-        // Add selected service to the customer's service array
-        if(customer.addService(service))
-            System.out.println("Service added successfully.");
-        else
-            System.out.println("Failed to add service.");
+        customer.addService(service);
+        System.out.println("Service added successfully.");
     }
 
-    // removes a selected service from a specific customer
-    public static void removeServiceFromCustomer(Hotel hotel, Scanner sc)
-    {
-        System.out.print("Enter customer ID: ");
-        String customerId = sc.nextLine();
+    // Removes a service from a customer
+    public static void removeServiceFromCustomer(Hotel hotel, Scanner sc) {
+
+        String customerId = readNumericId(sc, "Enter customer ID: ");
 
         Customer customer = hotel.searchCustomer(customerId);
 
-        if(customer == null)
-        {
+        if (customer == null) {
             System.out.println("Customer not found.");
             return;
         }
-     // customer must already have at least one service before removing one
-        if(!customer.hasServices())
-        {
+
+        if (!customer.hasServices()) {
             System.out.println("Customer has no services to remove.");
             return;
         }
 
-        System.out.print("Enter service name to remove: ");
-        String serviceName = sc.nextLine();
+        String serviceName = readName(sc, "Enter service name to remove: ");
 
-        if(customer.removeService(serviceName))
-        {
+        if (customer.removeService(serviceName)) {
             System.out.println("Service removed successfully.");
-        }
-        else
-        {
+        } else {
             System.out.println("Service not found.");
         }
     }
