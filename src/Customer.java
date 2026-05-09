@@ -174,27 +174,30 @@ public class Customer extends Person implements Serializable
     }
  
 
-    public String getReservationIds() {
-    String ids = "";
+    public String getReservationIds() 
+    {
+        String ids = "";
 
-    for (int i = 0; i < reservations.getSize(); i++) {
-        Reservation r = (Reservation) reservations.get(i);
-        ids += r.getReservationId();
-        if( i != reservations.getSize()-1)
-        {
-            ids += ", ";
+        for (int i = 0; i < reservations.getSize(); i++) {
+            Reservation r = (Reservation) reservations.get(i);
+            ids += r.getReservationId();
+            if( i != reservations.getSize()-1)
+            {
+                ids += ", ";
+            }
         }
+
+        return ids;
     }
 
-    return ids;
-}
+    public Reservation getLastReservation() 
+    {
+        if (reservations.isEmpty()) 
+        {
+            return null;
+        }
 
-    public Reservation getLastReservation() {
-    if (reservations.isEmpty()) {
-        return null;
+        return (Reservation) reservations.get(reservations.getSize() - 1);
     }
-
-    return (Reservation) reservations.get(reservations.getSize() - 1);
-}
 }
 
